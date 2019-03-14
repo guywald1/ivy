@@ -664,7 +664,9 @@ default_ui = Parameter("ui","art")
 
 def get_default_ui_module():
     defui = default_ui.get()
-    if defui == "art":
+    if defui == "web":
+        defui = "ivy_web"
+    elif defui == "art":
         defui = 'ivy_ui'
 #        return sys.modules[__name__]
     else:
