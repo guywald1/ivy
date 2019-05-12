@@ -142,6 +142,7 @@ class TkGraphWidget(TkCyCanvas,uu.WithMenuBar):
     # has already been done and we render to a Tk Canvas.
 
     def rebuild(self):
+        # print self.g.cy_elements
         with self.ui_parent.run_context():  # in case this is slow, but should not be
 
             # update the state label if needed (TODO: could be elsewhere)

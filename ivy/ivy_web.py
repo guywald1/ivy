@@ -1,5 +1,6 @@
 import ivy_transrel
 import ivy_logic as il
+from ivy_graph import *
 import ivy_logic_utils as ilu
 import logic as lg
 from ivy_solver import get_small_model
@@ -17,11 +18,21 @@ class Thing(object):
         self.value = value
 
 compile_kwargs = {'ext':'ext'}
+concept_graph = None
+
+# TODO: rename variables
+# TODO: do something with `clauses` param
+def view_state(r, n = 0, clauses=None, reset=False):
+    # if hasattr(self,'current_concept_graph'):
+    #     current_concept_graph.set_parent_state(n,clauses,reset=reset)
+    #     return
+    nn = r.states[n]
+    clauses = clauses or nn.clauses
+    sg = r.concept_graph(nn, standard_graph, clauses)
+    return sg.current
 
 # TODO: check about relations_to_minimize
 def check_inductiveness(art, conjectures):
-
-    
     ag = AnalysisGraph()
 
     pre = State()
@@ -87,17 +98,43 @@ def check_inductiveness(art, conjectures):
         if res is not None:
             current_conjecture = conj
             assert len(res.states) == 2
-
-            return (res, ag)
+            
+            return (res, clauses, ag)
 
 def serve(art):
     if not hasattr(art, 'state_graphs'):
         art.state_graphs = []
 
     conjectures = im.module.conjs
-    # print render_rg(art).elements
 
-    ag = check_inductiveness(art, conjectures)[0]
+    print render_rg(art).elements
 
-    # print ag
-    print ivy_web_utils.cy_elements_to_json(render_rg(ag).elements)
+    print '*'*20
+    print '*'*20
+
+    # check induction
+
+    res, clauses, ag = check_inductiveness(art, conjectures)
+
+    g0 = view_state(res, 0).copy()
+    g0.recompute()
+    print g0.cy_elements
+    # print render_concept_graph(g0).__dict__
+    # print ivy_web_utils.cy_elements_to_json(render_concept_graph(g0).elements)
+    # print '*'*20
+
+    # g1 = view_state(res, 1).copy()
+    # g1.recompute()
+    # print ivy_web_utils.cy_elements_to_json(render_concept_graph(g1).elements)
+
+    # g1 = view_state(res, 1)
+    # print ivy_web_utils.cy_elements_to_json(render_concept_graph(g1).elements)
+
+    # state0 = view_state(res, clauses, 0)
+    # print state0.elements
+    # print ivy_web_utils.cy_elements_to_json(render_concept_graph(state0.current).elements)
+
+    # state1 = view_state(res, clauses, 1)
+    # print ivy_web_utils.cy_elements_to_json(render_concept_graph(state1.current).elements)
+
+    # print ivy_web_utils.cy_elements_to_json(render_rg(ag).elements)

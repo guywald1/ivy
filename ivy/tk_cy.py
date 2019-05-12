@@ -104,7 +104,7 @@ class TkCyCanvas(Canvas):
     # create all the graph elements
 
     def create_elements(self,cy_elements):
-#        print 'cy_elements" {}'.format(cy_elements.elements)
+        print 'cy_elements" {}'.format(cy_elements.elements)
         self.elem_ids = {}
         self.edge_points = {}
         for idx,elem in enumerate(cy_elements.elements):
